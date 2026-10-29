@@ -1,0 +1,25 @@
+{
+  "name": "edtech-crm-monorepo",
+  "version": "1.0.0",
+  "description": "EdTech CRM & Inquiry Management System - Full-Stack Monorepo",
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "backend:dev": "npm --prefix backend run dev",
+    "backend:start": "npm --prefix backend start",
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test",
+    "create-admin": "npm --prefix backend run create-admin"
+  },
+  "keywords": [
+    "edtech",
+    "crm",
+    "inquiry-system",
+    "react",
+    "express",
+    "postgresql",
+    "supabase"
+  ],
+  "author": "EdTech Team",
+  "license": "ISC"
+}

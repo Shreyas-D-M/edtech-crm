@@ -1,0 +1,45 @@
+{
+  "name": "edtech-crm-backend",
+  "version": "1.0.0",
+  "description": "Backend API for EdTech CRM & Inquiry Management System",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --detectOpenHandles --forceExit --runInBand",
+    "create-admin": "node scripts/create-admin.js"
+  },
+  "keywords": [
+    "edtech",
+    "crm",
+    "inquiry-system",
+    "express",
+    "postgresql",
+    "supabase",
+    "jwt"
+  ],
+  "author": "EdTech Team",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
+  }
+}
