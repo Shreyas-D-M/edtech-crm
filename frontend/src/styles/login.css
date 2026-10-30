@@ -1,9 +1,10 @@
-/* Admin Login Page Styles */
+/* Admin Login Page Styles - Professional Enterprise Theme */
 
 .login-page-wrapper {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--neutral-50);
 }
 
 .login-main {
@@ -11,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2.5rem 1.25rem;
+  padding: 3rem 1.25rem;
 }
 
 .login-card {
@@ -20,8 +21,13 @@
   border: 1px solid var(--neutral-200);
   box-shadow: var(--shadow-md);
   width: 100%;
-  max-width: 440px;
-  padding: 2.5rem;
+  max-width: 420px;
+  padding: 2.5rem 2.25rem;
+  transition: box-shadow var(--transition-normal);
+}
+
+.login-card:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .login-header {
@@ -38,20 +44,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 1rem;
-  font-size: 1.5rem;
-  border: 1px solid var(--primary-500);
+  margin: 0 auto 1.125rem;
+  border: 1px solid rgba(30, 58, 138, 0.15);
+}
+
+.login-header-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--primary-700);
 }
 
 .login-header h1 {
   font-size: 1.5rem;
+  font-weight: 700;
   color: var(--primary-900);
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
 }
 
 .login-header p {
   font-size: 0.875rem;
   color: var(--neutral-500);
+  line-height: 1.5;
 }
 
 .password-input-wrapper {
@@ -62,35 +76,33 @@
 
 .password-toggle-btn {
   position: absolute;
-  right: 0.75rem;
+  right: 0.625rem;
   background: none;
   border: none;
   color: var(--neutral-500);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  font-weight: 500;
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
+  padding: 0.375rem 0.5rem;
   border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .password-toggle-btn:hover {
-  color: var(--neutral-800);
+  color: var(--neutral-900);
+  background-color: var(--neutral-100);
 }
 
-.login-tip-box {
-  background-color: var(--neutral-50);
-  border: 1px solid var(--neutral-200);
-  border-radius: var(--radius-md);
-  padding: 0.875rem;
-  margin-top: 1.5rem;
-  font-size: 0.8125rem;
-  color: var(--neutral-600);
-  line-height: 1.4;
+.password-toggle-btn svg {
+  width: 1rem;
+  height: 1rem;
 }
 
-.login-tip-box code {
-  background-color: var(--neutral-200);
-  padding: 0.125rem 0.25rem;
-  border-radius: 3px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+@media (max-width: 480px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
 }

@@ -169,20 +169,50 @@ export default function DashboardPage() {
     }
   };
 
+  const hasActiveFilters =
+    Boolean(filters.search) ||
+    filters.category !== 'All' ||
+    filters.user_type !== 'All' ||
+    filters.status !== 'All';
+
+  const adminInitial = (admin?.name || admin?.email || 'A').charAt(0).toUpperCase();
+
   return (
     <div className="dashboard-layout">
       {/* Top Navigation */}
       <header className="app-header">
         <div className="nav-container">
-          <Link to="/dashboard" className="brand-logo" id="dashboard-brand-link">
+          <Link to="/dashboard" className="brand-logo" id="dashboard-brand-link" aria-label="EduReach CRM Dashboard">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ color: 'var(--primary-700)' }}
+              aria-hidden="true"
+            >
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+              <path d="M6 6h10" />
+              <path d="M6 10h10" />
+              <path d="M6 14h6" />
+            </svg>
             <span>EduReach CRM</span>
-            <span className="brand-badge">Admin Workspace</span>
+            <span className="brand-badge">Admissions</span>
           </Link>
 
           <div className="admin-badge-group">
-            <div className="admin-info-text">
-              <span className="admin-info-name">{admin?.name || 'Administrator'}</span>
-              <span className="admin-info-email">{admin?.email || ''}</span>
+            <div className="admin-profile-pill">
+              <div className="admin-avatar" aria-hidden="true">
+                {adminInitial}
+              </div>
+              <div className="admin-info-text">
+                <span className="admin-info-name">{admin?.name || 'Administrator'}</span>
+                <span className="admin-info-email">{admin?.email || ''}</span>
+              </div>
             </div>
             <Link to="/" className="btn btn-secondary btn-sm" id="view-public-portal-btn">
               Public Portal
@@ -192,8 +222,14 @@ export default function DashboardPage() {
               className="btn btn-outline btn-sm"
               onClick={handleLogout}
               id="admin-logout-btn"
+              aria-label="Sign Out"
             >
-              Sign Out
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              <span>Sign Out</span>
             </button>
           </div>
         </div>
@@ -205,81 +241,160 @@ export default function DashboardPage() {
         <div className="dashboard-header">
           <div>
             <h1>Inquiry Management Dashboard</h1>
-            <p>Monitor prospective student inquiries, track communications, and update resolution statuses.</p>
+            <p>Monitor prospective student inquiries, track communications, and update resolution statuses in real-time.</p>
           </div>
-          <button
-            type="button"
-            className="btn btn-secondary btn-sm"
-            onClick={() => {
-              loadStats();
-              loadInquiries();
-            }}
-            disabled={isLoading}
-            id="refresh-dashboard-btn"
-          >
-            {isLoading ? <span className="spinner spinner-dark" aria-hidden="true"></span> : '↻'} Refresh Data
-          </button>
+          <div className="dashboard-header-actions">
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={() => {
+                loadStats();
+                loadInquiries();
+              }}
+              disabled={isLoading}
+              id="refresh-dashboard-btn"
+              aria-label="Refresh Dashboard Data"
+            >
+              {isLoading ? (
+                <span className="spinner spinner-dark" aria-hidden="true"></span>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+                </svg>
+              )}
+              <span>Refresh</span>
+            </button>
+          </div>
         </div>
 
         {/* Notifications & Error Banners */}
         {notification && (
           <div className="alert alert-success" role="status" id="dashboard-success-notification">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
             <span>{notification}</span>
           </div>
         )}
 
         {apiError && (
           <div className="alert alert-error" role="alert" id="dashboard-error-banner">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
             <span>{apiError}</span>
           </div>
         )}
 
         {/* Overview Stats Cards */}
         <section className="stats-grid" aria-label="Inquiry Metrics Overview">
+          {/* Total Inquiries */}
           <div className="stat-card total" id="stat-card-total">
             <div className="stat-card-border-indicator"></div>
-            <span className="stat-label">Total Inquiries</span>
+            <div className="stat-card-header">
+              <span className="stat-label">Total Inquiries</span>
+              <div className="stat-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
+                </svg>
+              </div>
+            </div>
             <span className="stat-value">{stats.total}</span>
+            <span className="stat-subtext">All-time logged records</span>
           </div>
 
+          {/* New Inquiries */}
           <div className="stat-card new" id="stat-card-new">
             <div className="stat-card-border-indicator"></div>
-            <span className="stat-label">New Inquiries</span>
+            <div className="stat-card-header">
+              <span className="stat-label">New Inquiries</span>
+              <div className="stat-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+            </div>
             <span className="stat-value">{stats.new}</span>
+            <span className="stat-subtext">Awaiting initial review</span>
           </div>
 
+          {/* In Progress */}
           <div className="stat-card progress" id="stat-card-progress">
             <div className="stat-card-border-indicator"></div>
-            <span className="stat-label">In Progress</span>
+            <div className="stat-card-header">
+              <span className="stat-label">In Progress</span>
+              <div className="stat-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+            </div>
             <span className="stat-value">{stats.inProgress}</span>
+            <span className="stat-subtext">Under active follow-up</span>
           </div>
 
+          {/* Resolved */}
           <div className="stat-card resolved" id="stat-card-resolved">
             <div className="stat-card-border-indicator"></div>
-            <span className="stat-label">Resolved</span>
+            <div className="stat-card-header">
+              <span className="stat-label">Resolved</span>
+              <div className="stat-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </div>
+            </div>
             <span className="stat-value">{stats.resolved}</span>
+            <span className="stat-subtext">Inquiries concluded</span>
           </div>
         </section>
 
-        {/* Toolbar: Filters & Multi-Parameter Search */}
-        <section className="toolbar-card" aria-label="Filters and Search Controls">
+        {/* Inquiry Directory Section */}
+        <section className="inquiry-section-wrapper" aria-label="Inquiry Management Directory">
+          <div className="inquiry-section-header">
+            <div className="inquiry-section-title-group">
+              <h2>Inquiry Records</h2>
+              <span className="badge badge-neutral" id="inquiry-total-badge">
+                {pagination.total} {pagination.total === 1 ? 'Record' : 'Records'}
+              </span>
+            </div>
+          </div>
+
+          {/* Toolbar: Filters & Multi-Parameter Search */}
           <div className="filter-bar">
-            {/* Search by Name or Phone */}
+            {/* Search Input */}
             <div className="search-input-wrapper">
+              <span className="search-input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </span>
               <input
                 type="text"
                 className="form-input"
-                placeholder="Search by name, phone, or email..."
+                placeholder="Search name, phone, or email..."
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
                 id="search-filter-input"
+                aria-label="Search inquiries"
               />
               {filters.search && (
                 <button
                   type="button"
                   className="search-clear-btn"
                   onClick={() => handleFilterChange('search', '')}
-                  aria-label="Clear search"
+                  aria-label="Clear search input"
                   id="clear-search-btn"
                 >
                   ✕
@@ -293,7 +408,7 @@ export default function DashboardPage() {
               value={filters.category}
               onChange={(e) => handleFilterChange('category', e.target.value)}
               id="category-filter-select"
-              aria-label="Filter by category"
+              aria-label="Filter by Category"
             >
               <option value="All">All Categories</option>
               {CATEGORIES.map((cat) => (
@@ -309,7 +424,7 @@ export default function DashboardPage() {
               value={filters.user_type}
               onChange={(e) => handleFilterChange('user_type', e.target.value)}
               id="user-type-filter-select"
-              aria-label="Filter by user role"
+              aria-label="Filter by Role"
             >
               <option value="All">All Roles</option>
               {USER_TYPES.map((type) => (
@@ -325,7 +440,7 @@ export default function DashboardPage() {
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
               id="status-filter-select"
-              aria-label="Filter by status"
+              aria-label="Filter by Status"
             >
               <option value="All">All Statuses</option>
               {STATUSES.map((status) => (
@@ -338,26 +453,24 @@ export default function DashboardPage() {
             {/* Reset Filters Button */}
             <button
               type="button"
-              className="btn btn-secondary btn-sm"
+              className={`btn btn-secondary btn-sm ${hasActiveFilters ? 'active' : ''}`}
               onClick={handleResetFilters}
+              disabled={!hasActiveFilters}
               id="reset-filters-btn"
             >
               Reset Filters
             </button>
           </div>
-        </section>
 
-        {/* Inquiries Table Card */}
-        <section className="table-card" aria-label="Inquiry Records Table">
+          {/* Inquiries Table */}
           <div className="table-responsive">
             <table className="data-table" id="inquiries-management-table">
               <thead>
                 <tr>
-                  <th>Name & Role</th>
-                  <th>Phone</th>
-                  <th>Email</th>
+                  <th>Applicant</th>
+                  <th>Contact Info</th>
                   <th>Category</th>
-                  <th>Date</th>
+                  <th>Submitted</th>
                   <th>Status</th>
                   <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
@@ -365,25 +478,31 @@ export default function DashboardPage() {
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: 'center', padding: '3rem' }}>
+                    <td colSpan={6} style={{ textAlign: 'center', padding: '3.5rem' }}>
                       <span className="spinner spinner-dark" aria-hidden="true"></span>
-                      <p style={{ marginTop: '0.75rem', color: 'var(--neutral-500)' }}>
+                      <p style={{ marginTop: '0.75rem', color: 'var(--neutral-500)', fontSize: '0.875rem' }}>
                         Loading inquiry records...
                       </p>
                     </td>
                   </tr>
                 ) : inquiries.length === 0 ? (
                   <tr>
-                    <td colSpan={7}>
+                    <td colSpan={6}>
                       <div className="empty-state-box">
-                        <div className="empty-state-icon">📋</div>
-                        <h3>No inquiries found</h3>
+                        <div className="empty-state-icon" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                          </svg>
+                        </div>
+                        <h3>No Inquiries Found</h3>
                         <p>
-                          {filters.search || filters.category !== 'All' || filters.user_type !== 'All' || filters.status !== 'All'
+                          {hasActiveFilters
                             ? 'No inquiries match your current filter and search criteria.'
                             : 'No inquiries have been received yet. Test by submitting an inquiry on the public portal.'}
                         </p>
-                        {(filters.search || filters.category !== 'All' || filters.user_type !== 'All' || filters.status !== 'All') && (
+                        {hasActiveFilters && (
                           <button
                             type="button"
                             className="btn btn-primary btn-sm"
@@ -405,19 +524,23 @@ export default function DashboardPage() {
                         </div>
                       </td>
                       <td>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8125rem' }}>
-                          {inquiry.phone}
-                        </span>
-                      </td>
-                      <td>
-                        <a href={`mailto:${inquiry.email}`} style={{ fontSize: '0.8125rem' }}>
-                          {inquiry.email}
-                        </a>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.125rem' }}>
+                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8125rem', color: 'var(--neutral-800)' }}>
+                            {inquiry.phone}
+                          </span>
+                          <a
+                            href={`mailto:${inquiry.email}`}
+                            style={{ fontSize: '0.8125rem', color: 'var(--primary-600)' }}
+                            title={`Send email to ${inquiry.email}`}
+                          >
+                            {inquiry.email}
+                          </a>
+                        </div>
                       </td>
                       <td>
                         <span className="badge badge-neutral">{inquiry.category}</span>
                       </td>
-                      <td style={{ color: 'var(--neutral-500)', fontSize: '0.8125rem' }}>
+                      <td style={{ color: 'var(--neutral-600)', fontSize: '0.8125rem', whiteSpace: 'nowrap' }}>
                         {formatDate(inquiry.created_at)}
                       </td>
                       <td>

@@ -27,14 +27,18 @@ app.use(helmet({
 // 2. CORS Configuration
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
   'http://localhost:3000',
   'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'http://127.0.0.1:5175',
 ];
 
 if (process.env.FRONTEND_URL) {
   // Support comma-separated origins if provided
   process.env.FRONTEND_URL.split(',').forEach(origin => {
-    const trimmed = origin.trim();
+    const trimmed = origin.trim().replace(/\/$/, '');
     if (trimmed && !allowedOrigins.includes(trimmed)) {
       allowedOrigins.push(trimmed);
     }

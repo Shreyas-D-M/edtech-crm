@@ -53,6 +53,16 @@ CREATE INDEX IF NOT EXISTS idx_inquiries_phone ON inquiries (phone);
 CREATE INDEX IF NOT EXISTS idx_inquiries_filter_composite ON inquiries (status, category, user_type);
 
 -- -----------------------------------------------------------------------------
+-- Row Level Security (RLS) Configuration
+-- -----------------------------------------------------------------------------
+-- Enables RLS to secure tables against direct access via Supabase's PostgREST API.
+-- Because no public policies are added, anonymous/client-side access is completely blocked.
+-- Your Node.js backend connects as the table owner ('postgres') and automatically
+-- bypasses RLS, retaining full access to perform all queries without complex policies.
+ALTER TABLE admins ENABLE ROW LEVEL SECURITY;
+ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
+
+-- -----------------------------------------------------------------------------
 -- Trigger Function: Automatically update updated_at timestamp on row modification
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -63,8 +73,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS set_inquiries_updated_at ON inquiries;
-CREATE TRIGGER set_inquiries_updated_at
-BEFORE UPDATE ON inquiries
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+-- Conditionally create the trigger without using DROP statements
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_trigger WHERE tgname = 'set_inquiries_updated_at'
+    ) THEN
+        CREATE TRIGGER set_inquiries_updated_at
+        BEFORE UPDATE ON inquiries
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+END;
+$$;

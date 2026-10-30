@@ -1,43 +1,78 @@
-/* Public Inquiry Portal Styles */
+/* Public Inquiry Portal Styles - Refined Professional System */
 
 .inquiry-page-wrapper {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--neutral-50);
 }
 
 .inquiry-main {
   flex: 1;
-  max-width: 760px;
+  max-width: 780px;
   width: 100%;
-  margin: 2.5rem auto;
+  margin: 2.75rem auto;
   padding: 0 1.25rem;
 }
 
+/* Trust Header / Hero section */
+.inquiry-trust-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--primary-50);
+  color: var(--primary-700);
+  border: 1px solid rgba(30, 58, 138, 0.15);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.875rem;
+}
+
+.inquiry-trust-banner svg {
+  width: 14px;
+  height: 14px;
+  color: var(--primary-600);
+}
+
+.inquiry-header-section {
+  text-align: center;
+  margin-bottom: 2.25rem;
+}
+
+.inquiry-header-section h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--primary-900);
+  margin-bottom: 0.625rem;
+  letter-spacing: -0.025em;
+}
+
+.inquiry-header-section p {
+  color: var(--neutral-600);
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* Card Container */
 .inquiry-card {
   background-color: var(--surface-white);
   border-radius: var(--radius-lg);
   border: 1px solid var(--neutral-200);
   box-shadow: var(--shadow-sm);
-  padding: 2.25rem;
+  padding: 2.5rem 2.25rem;
+  transition: box-shadow var(--transition-normal);
 }
 
-.inquiry-header-section {
-  text-align: center;
-  margin-bottom: 2rem;
+.inquiry-card:hover {
+  box-shadow: var(--shadow-md);
 }
 
-.inquiry-header-section h1 {
-  font-size: 1.75rem;
-  margin-bottom: 0.5rem;
-}
-
-.inquiry-header-section p {
-  color: var(--neutral-600);
-  max-width: 580px;
-  margin: 0 auto;
-}
-
+/* Grid Layouts */
 .form-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -45,13 +80,22 @@
 }
 
 @media (max-width: 640px) {
-  .form-grid-2 {
-    grid-template-columns: 1fr;
-    gap: 0;
+  .inquiry-main {
+    margin: 1.5rem auto;
+    padding: 0 1rem;
   }
 
   .inquiry-card {
-    padding: 1.5rem;
+    padding: 1.75rem 1.25rem;
+  }
+
+  .inquiry-header-section h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 }
 
@@ -66,10 +110,16 @@
 .success-card {
   background-color: var(--surface-white);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--status-resolved-border);
-  box-shadow: var(--shadow-sm);
-  padding: 2.5rem 2rem;
+  border: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-md);
+  padding: 3rem 2.25rem;
   text-align: center;
+  animation: fadeIn 250ms ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .success-icon-badge {
@@ -82,30 +132,42 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 1.25rem;
-  font-size: 1.75rem;
-  font-weight: 700;
   border: 1px solid var(--status-resolved-border);
 }
 
+.success-icon-badge svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
 .success-card h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.625rem;
+  margin-bottom: 0.625rem;
   color: var(--primary-900);
+  letter-spacing: -0.02em;
+}
+
+.success-card > p {
+  color: var(--neutral-600);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 .success-summary-box {
   background-color: var(--neutral-50);
   border: 1px solid var(--neutral-200);
   border-radius: var(--radius-md);
-  padding: 1.25rem;
-  margin: 1.5rem 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.75rem 0 2rem;
   text-align: left;
 }
 
 .summary-item {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 0;
+  align-items: center;
+  padding: 0.625rem 0;
   border-bottom: 1px solid var(--neutral-200);
   font-size: 0.875rem;
 }
@@ -127,9 +189,15 @@
 /* Public Footer */
 .portal-footer {
   text-align: center;
-  padding: 1.75rem;
+  padding: 2rem 1.5rem;
   font-size: 0.8125rem;
   color: var(--neutral-500);
   border-top: 1px solid var(--neutral-200);
   background-color: var(--surface-white);
+  margin-top: auto;
+}
+
+.portal-footer p {
+  font-size: 0.8125rem;
+  color: var(--neutral-500);
 }

@@ -143,9 +143,26 @@ export default function InquiryPage() {
       {/* Header */}
       <header className="app-header">
         <div className="nav-container">
-          <Link to="/" className="brand-logo" id="home-link">
+          <Link to="/" className="brand-logo" id="home-link" aria-label="EduReach CRM Home">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ color: 'var(--primary-700)' }}
+              aria-hidden="true"
+            >
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+              <path d="M6 6h10" />
+              <path d="M6 10h10" />
+              <path d="M6 14h6" />
+            </svg>
             <span>EduReach CRM</span>
-            <span className="brand-badge">Admissions & Inquiries</span>
+            <span className="brand-badge">Admissions</span>
           </Link>
           <div className="nav-links">
             <Link to="/login" className="btn btn-secondary btn-sm" id="admin-login-nav-btn">
@@ -159,18 +176,23 @@ export default function InquiryPage() {
       <main className="inquiry-main">
         {submittedInquiry ? (
           /* Success Screen */
-          <div className="success-card" id="submission-success-banner">
-            <div className="success-icon-badge" aria-hidden="true">✓</div>
-            <h2>Inquiry Submitted Successfully!</h2>
+          <div className="success-card" id="submission-success-banner" role="status">
+            <div className="success-icon-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <h2>Inquiry Submitted Successfully</h2>
             <p>
-              Thank you, <strong>{submittedInquiry.name}</strong>. Your inquiry has been logged in our system.
-              Our academic advisory team will review your query and respond shortly.
+              Thank you, <strong>{submittedInquiry.name}</strong>. Your inquiry has been registered with reference ID{' '}
+              <strong style={{ fontFamily: 'var(--font-mono)' }}>{submittedInquiry.id.slice(0, 8)}...</strong>.
+              An academic advisor will review your query and contact you promptly.
             </p>
 
             <div className="success-summary-box">
               <div className="summary-item">
                 <span className="summary-label">Reference ID</span>
-                <span className="summary-value" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
+                <span className="summary-value" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8125rem' }}>
                   {submittedInquiry.id}
                 </span>
               </div>
@@ -179,7 +201,7 @@ export default function InquiryPage() {
                 <span className="summary-value">{submittedInquiry.category}</span>
               </div>
               <div className="summary-item">
-                <span className="summary-label">Role</span>
+                <span className="summary-label">Applicant Role</span>
                 <span className="summary-value">{submittedInquiry.user_type}</span>
               </div>
               <div className="summary-item">
@@ -211,6 +233,12 @@ export default function InquiryPage() {
           /* Inquiry Form */
           <div className="inquiry-card">
             <div className="inquiry-header-section">
+              <div className="inquiry-trust-banner">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>Academic Advisory & Admissions Portal</span>
+              </div>
               <h1>Prospective Student & Inquiry Portal</h1>
               <p>
                 Have questions regarding admissions, scholarships, campus concerts, or academic programs?
@@ -239,6 +267,8 @@ export default function InquiryPage() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     disabled={isSubmitting}
+                    aria-invalid={Boolean(errors.user_type)}
+                    aria-describedby={errors.user_type ? 'user-type-error' : undefined}
                     required
                   >
                     <option value="">-- Select Your Role --</option>
@@ -248,7 +278,11 @@ export default function InquiryPage() {
                       </option>
                     ))}
                   </select>
-                  {errors.user_type && <span className="form-error">{errors.user_type}</span>}
+                  {errors.user_type && (
+                    <span className="form-error" id="user-type-error" role="alert">
+                      {errors.user_type}
+                    </span>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -263,6 +297,8 @@ export default function InquiryPage() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     disabled={isSubmitting}
+                    aria-invalid={Boolean(errors.category)}
+                    aria-describedby={errors.category ? 'category-error' : undefined}
                     required
                   >
                     <option value="">-- Select Category --</option>
@@ -272,7 +308,11 @@ export default function InquiryPage() {
                       </option>
                     ))}
                   </select>
-                  {errors.category && <span className="form-error">{errors.category}</span>}
+                  {errors.category && (
+                    <span className="form-error" id="category-error" role="alert">
+                      {errors.category}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -292,9 +332,16 @@ export default function InquiryPage() {
                   onBlur={handleBlur}
                   disabled={isSubmitting}
                   maxLength={100}
+                  autoComplete="name"
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={errors.name ? 'name-error' : undefined}
                   required
                 />
-                {errors.name && <span className="form-error">{errors.name}</span>}
+                {errors.name && (
+                  <span className="form-error" id="name-error" role="alert">
+                    {errors.name}
+                  </span>
+                )}
               </div>
 
               {/* Contact Row: Email & Phone */}
@@ -314,9 +361,16 @@ export default function InquiryPage() {
                     onBlur={handleBlur}
                     disabled={isSubmitting}
                     maxLength={255}
+                    autoComplete="email"
+                    aria-invalid={Boolean(errors.email)}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
                     required
                   />
-                  {errors.email && <span className="form-error">{errors.email}</span>}
+                  {errors.email && (
+                    <span className="form-error" id="email-error" role="alert">
+                      {errors.email}
+                    </span>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -334,9 +388,16 @@ export default function InquiryPage() {
                     onBlur={handleBlur}
                     disabled={isSubmitting}
                     maxLength={25}
+                    autoComplete="tel"
+                    aria-invalid={Boolean(errors.phone)}
+                    aria-describedby={errors.phone ? 'phone-error' : undefined}
                     required
                   />
-                  {errors.phone && <span className="form-error">{errors.phone}</span>}
+                  {errors.phone && (
+                    <span className="form-error" id="phone-error" role="alert">
+                      {errors.phone}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -350,19 +411,23 @@ export default function InquiryPage() {
                   name="message"
                   rows={5}
                   className={`form-textarea ${errors.message ? 'has-error' : ''}`}
-                  placeholder="Please describe your question, intended major/program, scholarship inquiries, or event details..."
+                  placeholder="Please describe your question, intended major or program, scholarship inquiries, or campus event details..."
                   value={formData.message}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   disabled={isSubmitting}
                   maxLength={2000}
+                  aria-invalid={Boolean(errors.message)}
+                  aria-describedby={errors.message ? 'message-error' : 'message-hint'}
                   required
                 />
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   {errors.message ? (
-                    <span className="form-error">{errors.message}</span>
+                    <span className="form-error" id="message-error" role="alert">
+                      {errors.message}
+                    </span>
                   ) : (
-                    <span className="form-hint">Minimum 10 characters</span>
+                    <span className="form-hint" id="message-hint">Minimum 10 characters</span>
                   )}
                   <span className="char-counter">{formData.message.length} / 2000</span>
                 </div>
@@ -372,7 +437,7 @@ export default function InquiryPage() {
               <button
                 type="submit"
                 className="btn btn-primary"
-                style={{ width: '100%', marginTop: '0.75rem', padding: '0.8125rem' }}
+                style={{ width: '100%', marginTop: '0.875rem', padding: '0.8125rem' }}
                 disabled={isSubmitting}
                 id="inquiry-submit-btn"
               >

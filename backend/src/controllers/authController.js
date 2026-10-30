@@ -62,9 +62,15 @@ const logout = async (req, res) => {
 const getMe = async (req, res, next) => {
   try {
     const admin = await authService.getAdminById(req.admin.id);
+    let csrfToken = req.cookies && req.cookies.csrf_token;
+    if (!csrfToken) {
+      csrfToken = generateCsrfToken();
+      setCsrfCookie(res, csrfToken);
+    }
     res.status(200).json({
       success: true,
       admin,
+      csrfToken,
     });
   } catch (error) {
     next(error);

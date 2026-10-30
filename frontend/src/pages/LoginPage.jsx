@@ -23,7 +23,7 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim() || !password) {
-      setErrorMessage('Please enter both email and password.');
+      setErrorMessage('Please enter both your administrator email and password.');
       return;
     }
 
@@ -34,7 +34,7 @@ export default function LoginPage() {
       await login(email.trim(), password);
       navigate('/dashboard', { replace: true });
     } catch (err) {
-      setErrorMessage(err.message || 'Invalid credentials or server error. Please try again.');
+      setErrorMessage(err.message || 'Invalid credentials or connection error. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -45,13 +45,30 @@ export default function LoginPage() {
       {/* Header */}
       <header className="app-header">
         <div className="nav-container">
-          <Link to="/" className="brand-logo" id="home-link">
+          <Link to="/" className="brand-logo" id="home-link" aria-label="EduReach CRM Home">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ color: 'var(--primary-700)' }}
+              aria-hidden="true"
+            >
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+              <path d="M6 6h10" />
+              <path d="M6 10h10" />
+              <path d="M6 14h6" />
+            </svg>
             <span>EduReach CRM</span>
             <span className="brand-badge">Admissions</span>
           </Link>
           <div className="nav-links">
             <Link to="/" className="btn btn-secondary btn-sm" id="public-form-nav-btn">
-              ← Public Form
+              ← Public Inquiry Portal
             </Link>
           </div>
         </div>
@@ -61,7 +78,12 @@ export default function LoginPage() {
       <main className="login-main">
         <div className="login-card">
           <div className="login-header">
-            <div className="login-header-icon" aria-hidden="true">🔒</div>
+            <div className="login-header-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
             <h1>Admin Portal Login</h1>
             <p>Enter your administrator credentials to access inquiry management.</p>
           </div>
@@ -82,10 +104,11 @@ export default function LoginPage() {
                 id="admin-email"
                 name="email"
                 className="form-input"
-                placeholder="admin@edtech.com"
+                placeholder="admin@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isSubmitting}
+                autoComplete="email"
                 autoFocus
                 required
               />
@@ -105,6 +128,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isSubmitting}
+                  autoComplete="current-password"
                   required
                 />
                 <button
@@ -114,7 +138,17 @@ export default function LoginPage() {
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   tabIndex={-1}
                 >
-                  {showPassword ? 'Hide' : 'Show'}
+                  {showPassword ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
                 </button>
               </div>
             </div>
@@ -122,7 +156,7 @@ export default function LoginPage() {
             <button
               type="submit"
               className="btn btn-primary"
-              style={{ width: '100%', marginTop: '1rem', padding: '0.8125rem' }}
+              style={{ width: '100%', marginTop: '1.25rem', padding: '0.8125rem' }}
               disabled={isSubmitting}
               id="login-submit-btn"
             >
@@ -132,17 +166,10 @@ export default function LoginPage() {
                   <span>Authenticating...</span>
                 </>
               ) : (
-                'Sign In'
+                'Sign In to Dashboard'
               )}
             </button>
           </form>
-
-          <div className="login-tip-box">
-            <strong>System Setup Note:</strong>
-            <p style={{ marginTop: '0.25rem' }}>
-              Admin accounts are configured securely via CLI. Run <code>npm run create-admin</code> inside <code>backend/</code> to provision your credentials.
-            </p>
-          </div>
         </div>
       </main>
     </div>

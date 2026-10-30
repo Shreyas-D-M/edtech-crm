@@ -3,11 +3,15 @@
  * Uses Fetch API with credentials: 'include' for HTTP-only cookie session persistence
  */
 
-// Fallback to relative '/api' which works with Vite proxy locally and same-domain in production,
-// or use VITE_API_URL if configured for separate domain deployment.
-const BASE_URL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api` 
+// Flexible BASE_URL resolution:
+// If VITE_API_URL is configured (e.g. production host), ensure it points to /api without duplicate /api/api
+// Otherwise fallback to relative '/api' which routes through the local Vite dev server proxy.
+const rawApiUrl = (import.meta.env.VITE_API_URL || '').trim();
+const BASE_URL = rawApiUrl
+  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/$/, '')}/api`)
   : '/api';
+
+let cachedCsrfToken = null;
 
 /**
  * Helper to retrieve CSRF token from document.cookie
@@ -15,6 +19,13 @@ const BASE_URL = import.meta.env.VITE_API_URL
 function getCsrfTokenFromCookie() {
   const match = document.cookie.match(new RegExp('(^|;\\s*)csrf_token=([^;]+)'));
   return match ? decodeURIComponent(match[2]) : null;
+}
+
+/**
+ * Get active CSRF token (prefers cookie, falls back to memory cache)
+ */
+function getCsrfToken() {
+  return getCsrfTokenFromCookie() || cachedCsrfToken;
 }
 
 /**
@@ -31,7 +42,7 @@ async function apiRequest(endpoint, options = {}) {
 
   // Attach CSRF token on state-changing requests if present
   if (['POST', 'PATCH', 'PUT', 'DELETE'].includes((options.method || 'GET').toUpperCase())) {
-    const csrf = getCsrfTokenFromCookie();
+    const csrf = getCsrfToken();
     if (csrf) {
       headers['X-CSRF-Token'] = csrf;
     }
@@ -48,6 +59,11 @@ async function apiRequest(endpoint, options = {}) {
     data = await response.json();
   } catch (err) {
     data = null;
+  }
+
+  // Auto-cache CSRF token if returned in response payload
+  if (data && data.csrfToken) {
+    cachedCsrfToken = data.csrfToken;
   }
 
   if (!response.ok) {
@@ -71,25 +87,38 @@ export const api = {
   },
 
   // Auth
-  login: (email, password) => {
-    return apiRequest('/auth/login', {
+  login: async (email, password) => {
+    const res = await apiRequest('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
+    if (res && res.csrfToken) {
+      cachedCsrfToken = res.csrfToken;
+    }
+    return res;
   },
 
-  logout: () => {
+  logout: async () => {
+    cachedCsrfToken = null;
     return apiRequest('/auth/logout', {
       method: 'POST',
     });
   },
 
-  getMe: () => {
-    return apiRequest('/auth/me');
+  getMe: async () => {
+    const res = await apiRequest('/auth/me');
+    if (res && res.csrfToken) {
+      cachedCsrfToken = res.csrfToken;
+    }
+    return res;
   },
 
-  getCsrfToken: () => {
-    return apiRequest('/auth/csrf-token');
+  getCsrfToken: async () => {
+    const res = await apiRequest('/auth/csrf-token');
+    if (res && res.csrfToken) {
+      cachedCsrfToken = res.csrfToken;
+    }
+    return res;
   },
 
   // Protected Inquiries
